@@ -10,6 +10,7 @@ public class Contesters : MonoBehaviour
     //private variables below
     [SerializeField] NavMeshAgent _navMeshAgent;
     GameObject Space;
+    [SerializeField] TableSlots tableSlot;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +20,7 @@ public class Contesters : MonoBehaviour
         {
             _navMeshAgent.SetDestination(RandomNavMeshLocation());
         }
+        tableSlot = GameObject.FindObjectOfType<TableSlots>();
     }
 
     // Update is called once per frame
@@ -26,8 +28,7 @@ public class Contesters : MonoBehaviour
     {
         if(_navMeshAgent != null && _navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance)
         {
-            TableSlots.instance.takenSpaces.Remove(Space);
-            TableSlots.instance.freeSpaces.Add(Space);
+            tableSlot.resetSpace(Space);
 
             _navMeshAgent.SetDestination(RandomNavMeshLocation());
         }
@@ -35,9 +36,9 @@ public class Contesters : MonoBehaviour
 
     public Vector3 RandomNavMeshLocation()
     {
-        Space = TableSlots.instance.freeSpaces[Random.Range(0, TableSlots.instance.freeSpaces.Count)];
-        TableSlots.instance.freeSpaces.Remove(Space);
-        TableSlots.instance.takenSpaces.Add(Space);
+        tableSlot.GetRandomElement(Space);
+        Space = tableSlot.selectedItem;
+        Debug.Log("Space = " + Space);
         Vector3 finalPositon = Vector3.zero;
         finalPositon = Space.transform.position;
         

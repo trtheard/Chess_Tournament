@@ -10,6 +10,7 @@ public class Audiance : MonoBehaviour
     //private variables below
     [SerializeField] NavMeshAgent _navMeshAgent;
     GameObject Slot;
+    [SerializeField] RoomSlots roomSlot;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +20,7 @@ public class Audiance : MonoBehaviour
         {
             _navMeshAgent.SetDestination(RandomNavMeshLocation());
         }
+        roomSlot = GameObject.FindObjectOfType<RoomSlots>();
     }
 
     // Update is called once per frame
@@ -26,8 +28,7 @@ public class Audiance : MonoBehaviour
     {
         if(_navMeshAgent != null && _navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance)
         {
-            RoomSlots.rs.takenSlots.Remove(Slot);
-            RoomSlots.rs.freeSlots.Add(Slot);
+            roomSlot.resetSlot(Slot);
 
             _navMeshAgent.SetDestination(RandomNavMeshLocation());
         }
@@ -35,10 +36,9 @@ public class Audiance : MonoBehaviour
 
     public Vector3 RandomNavMeshLocation()
     {
-        Slot = RoomSlots.rs.freeSlots[Random.Range(0, RoomSlots.rs.freeSlots.Count)];
+        roomSlot.GetRandomSlot(Slot);
+        Slot = roomSlot.selectedItem; 
         Debug.Log("Slot = " + Slot);
-        RoomSlots.rs.freeSlots.Remove(Slot);
-        RoomSlots.rs.takenSlots.Add(Slot);
         Vector3 finalPositon = Vector3.zero;
         finalPositon = Slot.transform.position;
         
